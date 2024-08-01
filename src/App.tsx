@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 
 // function Checkbox(){
@@ -20,11 +18,14 @@ type TaskListProps = {
 
 
 function TaskList({tasks}: TaskListProps){
- console.log(tasks)
+ console.log("tasks",tasks)
+ const allTasks = tasks.map((task) => <Task key = {task.id} title={task.title} description = {task.description}/>)
+ console.log("all",allTasks)
  return <>
  <h1>Task list</h1>
  <h3>Sorted by completion</h3>
-{tasks.map((task) => {<Task title={task.title}/>})}
+{allTasks}
+test
  </>
 }
 
@@ -54,7 +55,6 @@ function Task ({ title, description }: TaskProps) {
 }
 
 function App() {
-  const [count, setCount] = useState(0)
   const tasks: Task[] = [{title:"Test",description:"description",id:1},{title:"Sweep the Kitchen",description:"Get under the cabinets, do a good job",id:2},{title:"Another one!",description:"Do it!",id:3}]
   return (
     <>
@@ -62,9 +62,7 @@ function App() {
     <div className='w-full min-h-full flex flex-col items-center'>
     <TaskList tasks={tasks}/>
     <div className='my-2'></div>
-    <Task />  
     <div className='my-2'></div>
-    <Task />
     </div>
       
     </div>
