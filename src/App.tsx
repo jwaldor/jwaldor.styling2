@@ -66,6 +66,94 @@ function MessageBox({text,isCurrentUser, neighbor}: MessageBoxProps){
   )
 }
 
+type MessageGroupProps = {messagegroup:ConvoMessage[]}
+
+function MessageGroup({messagegroup}:MessageGroupProps) {
+  console.log("messagegroup",messagegroup)
+  let neighbors = messagegroup.map((message:ConvoMessage,index:number) => {
+    console.log("neighbors",message)
+    console.log(message.isCurrentUser)
+    if (messagegroup.length === 1){
+      return "none"
+    }
+    else if (index === 0){
+      if (message.isCurrentUser === messagegroup[1].isCurrentUser){
+        return "below"
+      }
+      else{
+        return "none"
+      }
+    }
+    else if (index === messagegroup.length-1){
+      if (message.isCurrentUser === messagegroup[messagegroup.length-2].isCurrentUser){
+        return "above"
+      }
+      else{
+        return "none"
+      }
+    }
+    else{
+      if (message.isCurrentUser === messagegroup[index-1].isCurrentUser && message.isCurrentUser === messagegroup[index+1].isCurrentUser){
+        return "both"
+      }
+      else if (message.isCurrentUser === messagegroup[index].isCurrentUser && message.isCurrentUser === messagegroup[index+1].isCurrentUser){
+        return "below"
+      }
+      else if (message.isCurrentUser === messagegroup[index].isCurrentUser && message.isCurrentUser === messagegroup[index-1].isCurrentUser){
+        return "above"
+      }
+      else{
+        return "none"
+      }
+    }
+  })
+
+  // const leftOrRightCname = isCurrentUser ? 'justify-end items-end' : 'justify-start items-start'
+  return (
+      <div className="w-full flex flex-col">
+          {messagegroup.map((message:ConvoMessage,index:number) => {
+          console.log("message",message)
+          let include_image = false
+          if (index === 0){
+            include_image = true
+          }
+          else if(message.isCurrentUser!==messagegroup[index-1].isCurrentUser){
+            include_image = true
+          }
+          else {
+            include_image = false
+          }
+          const FormattedImage = ({}) => <><div className='flex flex-col'>
+                <ImageBox icon={message.icon} name={message.userName}/>
+          </div>
+          </>
+
+          //if we are including image and we are the right-hand user...
+          const BaseMessage = ({}) => <><MessageBox text={message.text} isCurrentUser={message.isCurrentUser} neighbor={neighbors[index]}/></>
+          console.log(BaseMessage)
+          let formattedMessage =  <div>error</div>
+          if (include_image && !message.isCurrentUser){
+              formattedMessage = <div className='flex flex-row'> 
+              <BaseMessage /> <FormattedImage/> </div>
+          }
+          //and the other cases...
+          else if (!include_image && !message.isCurrentUser){
+            formattedMessage = <div className='flex flex-row'> <BaseMessage /> </div>
+          }
+          else if (include_image && message.isCurrentUser){
+            formattedMessage = <div className='flex flex-row'>
+            <FormattedImage/> <BaseMessage />  </div>
+          }
+          if (!include_image && message.isCurrentUser){
+            formattedMessage = <div className='flex flex-row'> <BaseMessage /> </div>
+          }
+          console.log("formattedMessage",formattedMessage)
+          return formattedMessage
+        })}
+      </div>
+  )
+}
+
 type MessagePicProps = {
   url: string
   name: string
@@ -75,6 +163,7 @@ type MessagePicProps = {
 function MessagePic( {url,name, role}: MessagePicProps){
 
 }
+
 type ConvoMessage = {
   id: number
   text: string
@@ -88,81 +177,25 @@ type MessageThreadProps = {conversation:ConvoMessage[]}
 function MessageThread({conversation}:MessageThreadProps){
   console.log("conversation",conversation)
   conversation.map((message:ConvoMessage)=>console.log(message))
-  let neighbors = conversation.map((message:ConvoMessage,index:number) => {
-    console.log("neighbors",message)
-    console.log(message.isCurrentUser)
-    if (index === 0){
-      if (message.isCurrentUser === conversation[1].isCurrentUser){
-        return "below"
+  const groupedconvo:ConvoMessage[][] = []
+  conversation.forEach(
+    (amessage) => {
+      if (groupedconvo.length === 0){
+        groupedconvo.push([conversation[0]])
+      }
+      else if (groupedconvo[groupedconvo.length-1][0].isCurrentUser === amessage.isCurrentUser){
+        groupedconvo[groupedconvo.length-1].push(amessage)
       }
       else{
-        return "none"
+        groupedconvo.push([amessage])
       }
-    }
-    else if (index === conversation.length-1){
-      if (message.isCurrentUser === conversation[conversation.length-2].isCurrentUser){
-        return "above"
-      }
-      else{
-        return "none"
-      }
-    }
-    else{
-      if (message.isCurrentUser === conversation[index-1].isCurrentUser && message.isCurrentUser === conversation[index+1].isCurrentUser){
-        return "both"
-      }
-      else if (message.isCurrentUser === conversation[index].isCurrentUser && message.isCurrentUser === conversation[index+1].isCurrentUser){
-        return "below"
-      }
-      else if (message.isCurrentUser === conversation[index].isCurrentUser && message.isCurrentUser === conversation[index-1].isCurrentUser){
-        return "above"
-      }
-      else{
-        return "none"
-      }
-    }
-  })
-  return <>
-  <div className = 'flex flex-col max-w-lg'>
-    {conversation.map((message:ConvoMessage,index:number) => {
-    console.log("message",message)
-    let include_image = false
-    if (index === 0){
-      include_image = true
-    }
-    else if(message.isCurrentUser!==conversation[index-1].isCurrentUser){
-      include_image = true
-    }
-    else {
-      include_image = false
-    }
-    const FormattedImage = ({}) => <><div className='flex flex-col'>
-          <ImageBox icon={message.icon} name={message.userName}/>
-    </div>
-    </>
 
-    //if we are including image and we are the right-hand user...
-    const BaseMessage = ({}) => <><MessageBox text={message.text} isCurrentUser={message.isCurrentUser} neighbor={neighbors[index]}/></>
-    console.log(BaseMessage)
-    let formattedMessage =  <div>error</div>
-    if (include_image && !message.isCurrentUser){
-        formattedMessage = <div className='flex flex-row'> 
-        <BaseMessage /> <FormattedImage/> </div>
-    }
-    //and the other cases...
-    else if (!include_image && !message.isCurrentUser){
-      formattedMessage = <div className='flex flex-row'> <BaseMessage /> </div>
-    }
-    else if (include_image && message.isCurrentUser){
-      formattedMessage = <div className='flex flex-row'>
-      <FormattedImage/> <BaseMessage />  </div>
-    }
-    if (!include_image && message.isCurrentUser){
-      formattedMessage = <div className='flex flex-row'> <BaseMessage /> </div>
-    }
-    console.log("formattedMessage",formattedMessage)
-    return formattedMessage
-  })}
+  }
+)
+console.log("groupedconvo",groupedconvo)
+  return <>
+  <div className = 'flex flex-col max-w-md  w-[90%]'>
+    {groupedconvo.map((group) => <MessageGroup messagegroup={group}/>)}
   </div>
   </>
 }
