@@ -110,13 +110,16 @@ function MessageGroup({ messagegroup }: MessageGroupProps) {
       }
     }
   });
-  const leftOrRightCname = messagegroup[0].isCurrentUser
+
+  const isCurrentUser = messagegroup[0].isCurrentUser;
+
+  const leftOrRightCname = isCurrentUser
     ? "justify-end items-end"
     : "justify-start items-start";
 
   return (
-    <div className={`w-full flex flex-row ${leftOrRightCname}`}>
-      <div className="flex flex-col">
+    <>
+      <div id="message-group" className={`flex flex-col ${leftOrRightCname}`}>
         {messagegroup.map((message: ConvoMessage, index: number) => {
           let include_image = false;
           if (index === 0) {
@@ -163,13 +166,35 @@ function MessageGroup({ messagegroup }: MessageGroupProps) {
               </div>
             );
           }
-          console.log("formattedMessage", formattedMessage);
-          return formattedMessage;
+
+          const leftAvatar = include_image && !isCurrentUser;
+          const rightAvatar = include_image && isCurrentUser;
+
+          return (
+            <>
+            <div className={`flex flex-1 ${leftOrRightCname}`}>
+
+              {leftAvatar && (
+                <ImageBox
+                icon={"b0fbdd8e320622de39475b562ddad56d.png"}
+                name={"Avatar1"}
+                />
+              )}
+              {formattedMessage}
+              {rightAvatar && (
+                <ImageBox
+                icon={"b0fbdd8e320622de39475b562ddad56d.png"}
+                name={"Avatar1"}
+                />
+              )}
+              </div>
+            </>
+          );
         })}
       </div>
       {/* for the photo */}
       <div className="flex flex-col"></div>
-    </div>
+    </>
   );
 }
 
