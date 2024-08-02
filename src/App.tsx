@@ -6,12 +6,173 @@ import './App.css'
 //   </>
 // }
 
+type imageBoxProps = {
+  icon: string
+  name:string
+}
+
+function ImageBox({icon,name}:imageBoxProps) {
+  return <>
+  <div className = 'flex flex-col'>
+  <div className = 'text-[#F7F7F7] text-xs'>{name}</div>
+<div className = "flex clip-circle bg-gray-400 w-[4rem]">
+      <img src={`/src/assets/${icon}`}/>
+    </div>
+    </div>
+  </>
+}
+
+
+type MessageBoxProps = {
+  text: string
+  isCurrentUser: boolean
+  neighbor: "above" | "below" | "both" | "none"
+}
+
+function MessageBox({text,isCurrentUser, neighbor}: MessageBoxProps){
+  const colorString = isCurrentUser ? 'bg-[#D8D8D8]' : 'bg-[#74C2FF]'
+  let makeBorderSharp = ""
+  if (neighbor !== "none"){
+    console.log(neighbor + String(isCurrentUser))
+    switch(neighbor + String(isCurrentUser)){
+      case "abovetrue":
+        makeBorderSharp = "rounded-tl-none"
+        break
+      case "belowtrue":
+        makeBorderSharp = "rounded-bl-none"
+        break
+      case "abovefalse":
+        makeBorderSharp = "rounded-tr-none"
+        break
+      case "belowfalse":
+        makeBorderSharp = "rounded-br-none"
+        break
+      case "bothtrue":
+        makeBorderSharp = "rounded-bl-none rounded-tl-none"
+        break
+      case "bothfalse":
+        makeBorderSharp = "rounded-br-none rounded-tr-none"
+        break
+    }
+    console.log(makeBorderSharp)
+  }
+  const boxSpecs = `flex flex-row py-2 pr-8 rounded-[0.45em] mb-2 mr-4 ml-4 w-[70%] ${colorString} ${makeBorderSharp}`
+  return (
+    <div className={boxSpecs}>
+        <div className='text-[0.6rem] mt-1 ml-2'>
+        {text}
+        </div>
+    </div>
+  )
+}
+
+type MessagePicProps = {
+  url: string
+  name: string
+  role: number
+}
+
+function MessagePic( {url,name, role}: MessagePicProps){
+
+}
+type ConvoMessage = {
+  id: number
+  text: string
+  isCurrentUser: boolean
+  icon: string
+  userName: string
+}
+
+type MessageThreadProps = {conversation:ConvoMessage[]}
+
+function MessageThread({conversation}:MessageThreadProps){
+  console.log("conversation",conversation)
+  conversation.map((message:ConvoMessage)=>console.log(message))
+  let neighbors = conversation.map((message:ConvoMessage,index:number) => {
+    console.log("neighbors",message)
+    console.log(message.isCurrentUser)
+    if (index === 0){
+      if (message.isCurrentUser === conversation[1].isCurrentUser){
+        return "below"
+      }
+      else{
+        return "none"
+      }
+    }
+    else if (index === conversation.length-1){
+      if (message.isCurrentUser === conversation[conversation.length-2].isCurrentUser){
+        return "above"
+      }
+      else{
+        return "none"
+      }
+    }
+    else{
+      if (message.isCurrentUser === conversation[index-1].isCurrentUser && message.isCurrentUser === conversation[index+1].isCurrentUser){
+        return "both"
+      }
+      else if (message.isCurrentUser === conversation[index].isCurrentUser && message.isCurrentUser === conversation[index+1].isCurrentUser){
+        return "below"
+      }
+      else if (message.isCurrentUser === conversation[index].isCurrentUser && message.isCurrentUser === conversation[index-1].isCurrentUser){
+        return "above"
+      }
+      else{
+        return "none"
+      }
+    }
+  })
+  return <>
+  <div className = 'flex flex-col max-w-lg'>
+    {conversation.map((message:ConvoMessage,index:number) => {
+    console.log("message",message)
+    let include_image = false
+    if (index === 0){
+      include_image = true
+    }
+    else if(message.isCurrentUser!==conversation[index-1].isCurrentUser){
+      include_image = true
+    }
+    else {
+      include_image = false
+    }
+    const FormattedImage = ({}) => <><div className='flex flex-col'>
+          <ImageBox icon={message.icon} name={message.userName}/>
+    </div>
+    </>
+
+    //if we are including image and we are the right-hand user...
+    const BaseMessage = ({}) => <><MessageBox text={message.text} isCurrentUser={message.isCurrentUser} neighbor={neighbors[index]}/></>
+    console.log(BaseMessage)
+    let formattedMessage =  <div>error</div>
+    if (include_image && !message.isCurrentUser){
+        formattedMessage = <div className='flex flex-row'> 
+        <BaseMessage /> <FormattedImage/> </div>
+    }
+    //and the other cases...
+    else if (!include_image && !message.isCurrentUser){
+      formattedMessage = <div className='flex flex-row'> <BaseMessage /> </div>
+    }
+    else if (include_image && message.isCurrentUser){
+      formattedMessage = <div className='flex flex-row'>
+      <FormattedImage/> <BaseMessage />  </div>
+    }
+    if (!include_image && message.isCurrentUser){
+      formattedMessage = <div className='flex flex-row'> <BaseMessage /> </div>
+    }
+    console.log("formattedMessage",formattedMessage)
+    return formattedMessage
+  })}
+  </div>
+  </>
+}
+
+
 type Task = {
   id: number
   title: string
   description: string
 }
-
 
 
 function TaskList(){
@@ -59,13 +220,45 @@ function Task ({ title, description,status,handleChange}: TaskProps) {
 }
 
 function App() {
-
+  const icon0 = "c3fa630880a17b97a1f864fb528f0aa2.png"
+  const icon1 = "b0fbdd8e320622de39475b562ddad56d.png"
   //: Task[]
+  const conversation_ex = [
+    {text:"I just completed my first 10k run this morning, and I feel amazing! It was a bit of a struggle towards the end, but pushing through the last kilometer was so rewarding. Now, I'm enjoying a big breakfast to refuel. If anyone wants to join me for a run next week, let me know!",
+      isCurrentUser: false,
+      icon: icon1,
+      id: 0,
+      userName: "Jill"
+    },
+    {text:"I'm planning a weekend getaway to the mountains and can't wait to disconnect from the hustle and bustle of city life. I've booked a cozy cabin with a fireplace, and I'm looking forward to some hiking, stargazing, and simply enjoying the peace and quiet.",
+      isCurrentUser: false,
+      icon: icon1,
+      id: 1,
+      userName: "Jill"
+    },
+    {text:"I've decided to take up a new hobby and start learning how to play the piano. It's something I've always wanted to do, and I finally signed up for lessons. The first few sessions have been challenging, but I love the feeling of progress with each practice.",
+      isCurrentUser: true,
+      icon: icon0,
+      id: 2,
+      userName: "Alice"
+    },
+    {text:"I just completed my first 10k run this morning, and I feel amazing! It was a bit of a struggle towards the end, but pushing through the last kilometer was so rewarding. Now, I'm enjoying a big breakfast to refuel. If anyone wants to join me for a run next week, let me know!",
+      isCurrentUser: false,
+      icon: icon1,
+      id: 3,
+      userName: "Jill"
+    }
+  ]
 
   return (
     <>
-    <div className='w-full min-h-full flex flex-col items-center'>
+    <div className='w-full min-h-full flex flex-col items-end'>
     <TaskList />
+    <MessageBox isCurrentUser={false} text={"hello"} neighbor={"none"} />
+    <MessageBox isCurrentUser={true} text={"hello"} neighbor={"below"} />
+    <MessageThread conversation={conversation_ex} />
+
+    <ImageBox icon={"b0fbdd8e320622de39475b562ddad56d.png"} name={"Avatar1"}/>
     <div className='my-2'></div>
     <div className='my-2'></div>
     </div>
