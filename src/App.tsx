@@ -107,11 +107,14 @@ function MessageGroup({messagegroup}:MessageGroupProps) {
       }
     }
   })
+  const leftOrRightCname = messagegroup[0].isCurrentUser ? 'justify-end items-end' : 'justify-start items-start'
 
-  // const leftOrRightCname = isCurrentUser ? 'justify-end items-end' : 'justify-start items-start'
   return (
-      <div className="w-full flex flex-col">
+      <div className={`w-full flex flex-row ${leftOrRightCname}`}>
+        <div className="flex flex-col">
           {messagegroup.map((message:ConvoMessage,index:number) => {
+          const leftOrRightCname = message.isCurrentUser ? 'justify-end items-end' : 'justify-start items-start'
+          
           console.log("message",message)
           let include_image = false
           if (index === 0){
@@ -134,7 +137,7 @@ function MessageGroup({messagegroup}:MessageGroupProps) {
           let formattedMessage =  <div>error</div>
           if (include_image && !message.isCurrentUser){
               formattedMessage = <div className='flex flex-row'> 
-              <BaseMessage /> <FormattedImage/> </div>
+              <BaseMessage /> </div>
           }
           //and the other cases...
           else if (!include_image && !message.isCurrentUser){
@@ -142,7 +145,7 @@ function MessageGroup({messagegroup}:MessageGroupProps) {
           }
           else if (include_image && message.isCurrentUser){
             formattedMessage = <div className='flex flex-row'>
-            <FormattedImage/> <BaseMessage />  </div>
+            <BaseMessage />  </div>
           }
           if (!include_image && message.isCurrentUser){
             formattedMessage = <div className='flex flex-row'> <BaseMessage /> </div>
@@ -150,6 +153,11 @@ function MessageGroup({messagegroup}:MessageGroupProps) {
           console.log("formattedMessage",formattedMessage)
           return formattedMessage
         })}
+        </div>
+        {/* for the photo */}
+        <div className="flex flex-col">
+          
+        </div>
       </div>
   )
 }
@@ -192,9 +200,11 @@ function MessageThread({conversation}:MessageThreadProps){
 
   }
 )
+
+//
 console.log("groupedconvo",groupedconvo)
   return <>
-  <div className = 'flex flex-col max-w-md  w-[90%]'>
+  <div className = 'flex flex-col w-[90%]'> 
     {groupedconvo.map((group) => <MessageGroup messagegroup={group}/>)}
   </div>
   </>
@@ -289,12 +299,16 @@ function App() {
     <TaskList />
     <MessageBox isCurrentUser={false} text={"hello"} neighbor={"none"} />
     <MessageBox isCurrentUser={true} text={"hello"} neighbor={"below"} />
-    <MessageThread conversation={conversation_ex} />
 
     <ImageBox icon={"b0fbdd8e320622de39475b562ddad56d.png"} name={"Avatar1"}/>
     <div className='my-2'></div>
     <div className='my-2'></div>
     </div>
+    <br></br>
+    <br></br>
+    <br></br>
+
+    <MessageThread conversation={conversation_ex} />
       
     </>
   )
