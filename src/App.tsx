@@ -262,6 +262,24 @@ function Task ({ title, description,status,handleChange}: TaskProps) {
   )
 }
 
+
+
+type PostProps = {name:string,
+  icon:string,
+  group:string,
+  time:number,
+  description:string,
+  likes:number,
+  comments:number}
+
+function Post({name,icon,group,time, description,likes,comments}:PostProps){
+  return <>
+  <div className='flex flex-row'>
+  <ImageBox icon={icon} name={name}/>
+  </div>
+  </>
+}
+
 function App() {
   const icon0 = "c3fa630880a17b97a1f864fb528f0aa2.png"
   const icon1 = "b0fbdd8e320622de39475b562ddad56d.png"
@@ -292,6 +310,13 @@ function App() {
       userName: "Jill"
     }
   ]
+  const post_ex = {name:"Jill",
+  icon:"b0fbdd8e320622de39475b562ddad56d.png",
+  group:"Ellipse",
+  time:30,
+  description:"Lorem ipsum dolor amet",
+  likes:10,
+  comments:10}
 
   return (
     <>
@@ -309,7 +334,7 @@ function App() {
     <br></br>
 
     <MessageThread conversation={conversation_ex} />
-      
+    <Post name={post_ex.name} icon={post_ex.icon} group={post_ex.group} time={post_ex.time} description={post_ex.description} likes={post_ex.likes} comments={post_ex.comments} />
     </>
   )
 }
