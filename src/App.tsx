@@ -415,28 +415,30 @@ function HeatGrid({ heatvalues }: HeatProps) {
 type TabType = { name: string; picture: string; description: string };
 type TabProps = { tabs: [TabType, TabType, TabType]; currtab: number };
 
-function TabDescriptor({ tabs, currtab }: TabProps) {
+function TabDescriptor({ tabs }: TabProps) {
+  const [currtab, setCurrTab] = useState(0);
   return (
     <>
       <div className="flex flex-col w-[90%] max-w-sm text-center">
         <div className="flex flex-row bg-[#eeecec] justify-around rounded-lg m-3">
           {tabs.map((atab, index) => (
-            <div
-              className={`w-[30%] my-2 rounded-md ${
-                index === currtab ? "bg-white" : ""
-              }`}
+            <button
+              onClick={() => setCurrTab(index)}
+              className={`w-[30%] py-1 my-2 rounded-md ${
+                index !== currtab ? "hover:bg-gray-200" : ""
+              } ${index === currtab ? "bg-white" : ""}`}
             >
               {atab.name}
-            </div>
+            </button>
           ))}
         </div>
-        <div className="flex flex-col bg-white m-3 rounded-lg">
+        <div className="flex flex-col bg-white m-3 rounded-lg items-center p-1">
           {/*  */}
           <img
-            className="rounded-full w-40 h-40 object-cover m-4"
+            className="rounded-full w-40 h-40 object-cover mt-3 mb-3"
             src={tabs[currtab].picture}
           ></img>
-          <div className="m-2">{tabs[currtab].description}</div>
+          <div className="mt-3 mb-4 mx-4">{tabs[currtab].description}</div>
         </div>
       </div>
     </>
@@ -540,11 +542,11 @@ function App() {
         />
       </div>
       <HeatGrid heatvalues={heatvalues} />
-      <div className="bg-gray-300">
-        <TabDescriptor tabs={tab_ex} currtab={0} />
+      <div className="bg-gray-300 flex flex-col items-center">
+        <TabDescriptor tabs={tab_ex} />
       </div>
 
-      <div className="flex flex-col bg-white m-3 rounded-lg justify-center">
+      <div className="flex flex-col bg-white m-3 rounded-lg items-center">
         {/*  */}
         <img
           className="rounded-full w-40 h-40 object-cover m-4"
