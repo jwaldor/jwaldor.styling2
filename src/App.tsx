@@ -67,119 +67,6 @@ function MessageBox({ text, isCurrentUser, neighbor }: MessageBoxProps) {
 
 type MessageGroupProps = { messagegroup: ConvoMessage[] };
 
-function MessageGroup({ messagegroup }: MessageGroupProps) {
-  console.log("messagegroup", messagegroup);
-  let neighbors = messagegroup.map((message: ConvoMessage, index: number) => {
-    console.log("neighbors", message);
-    console.log(message.isCurrentUser);
-    if (messagegroup.length === 1) {
-      return "none";
-    } else if (index === 0) {
-      if (message.isCurrentUser === messagegroup[1].isCurrentUser) {
-        return "below";
-      } else {
-        return "none";
-      }
-    } else if (index === messagegroup.length - 1) {
-      if (
-        message.isCurrentUser ===
-        messagegroup[messagegroup.length - 2].isCurrentUser
-      ) {
-        return "above";
-      } else {
-        return "none";
-      }
-    } else {
-      if (
-        message.isCurrentUser === messagegroup[index - 1].isCurrentUser &&
-        message.isCurrentUser === messagegroup[index + 1].isCurrentUser
-      ) {
-        return "both";
-      } else if (
-        message.isCurrentUser === messagegroup[index].isCurrentUser &&
-        message.isCurrentUser === messagegroup[index + 1].isCurrentUser
-      ) {
-        return "below";
-      } else if (
-        message.isCurrentUser === messagegroup[index].isCurrentUser &&
-        message.isCurrentUser === messagegroup[index - 1].isCurrentUser
-      ) {
-        return "above";
-      } else {
-        return "none";
-      }
-    }
-  });
-
-  const isCurrentUser = messagegroup[0].isCurrentUser;
-
-  const leftOrRightCname = isCurrentUser
-    ? "items-end" //"justify-start items-start"
-    : "items-start"; //"justify-end items-end";
-
-  return (
-    <>
-      <div
-        id="message-group"
-        className={`flex flex-col w-[70%] ${leftOrRightCname}`}
-      >
-        {messagegroup.map((message: ConvoMessage, index: number) => {
-          let include_image = false;
-          if (index === 0) {
-            include_image = true;
-          } else if (
-            message.isCurrentUser !== messagegroup[index - 1].isCurrentUser
-          ) {
-            include_image = true;
-          } else {
-            include_image = false;
-          }
-          const FormattedImage = ({}) => (
-            <>
-              <div className="flex flex-col">
-                <ImageBox icon={message.icon} name={message.userName} />
-              </div>
-            </>
-          );
-
-          //if we are including image and we are the right-hand user...
-          const BaseMessage = ({}) => (
-            <MessageBox
-              text={message.text}
-              isCurrentUser={message.isCurrentUser}
-              neighbor={neighbors[index]}
-            />
-          );
-          console.log(BaseMessage);
-
-          const leftAvatar = include_image && isCurrentUser;
-          const rightAvatar = include_image && !isCurrentUser;
-
-          return (
-            <>
-              {leftAvatar && (
-                <ImageBox
-                  icon={"b0fbdd8e320622de39475b562ddad56d.png"}
-                  name={""}
-                />
-              )}
-              <BaseMessage />
-              {rightAvatar && (
-                <ImageBox
-                  icon={"b0fbdd8e320622de39475b562ddad56d.png"}
-                  name={""}
-                />
-              )}
-            </>
-          );
-        })}
-      </div>
-      {/* for the photo */}
-      <div className="flex flex-col"></div>
-    </>
-  );
-}
-
 function getNeighbors(messagegroup: Array<ConvoMessage>) {
   return messagegroup.map((message: ConvoMessage, index: number) => {
     console.log("neighbors", message);
@@ -289,36 +176,6 @@ type ConvoMessage = {
 };
 
 type MessageThreadProps = { conversation: ConvoMessage[] };
-
-function MessageThread({ conversation }: MessageThreadProps) {
-  console.log("conversation", conversation);
-  conversation.map((message: ConvoMessage) => console.log(message));
-  const groupedconvo: ConvoMessage[][] = [];
-  conversation.forEach((amessage) => {
-    if (groupedconvo.length === 0) {
-      groupedconvo.push([conversation[0]]);
-    } else if (
-      groupedconvo[groupedconvo.length - 1][0].isCurrentUser ===
-      amessage.isCurrentUser
-    ) {
-      groupedconvo[groupedconvo.length - 1].push(amessage);
-    } else {
-      groupedconvo.push([amessage]);
-    }
-  });
-
-  //
-  console.log("groupedconvo", groupedconvo);
-  return (
-    <>
-      <div className="flex flex-col w-[90%] w-max-md">
-        {groupedconvo.map((group) => (
-          <MessageGroup messagegroup={group} />
-        ))}
-      </div>
-    </>
-  );
-}
 
 function MessageThreadImproved({ conversation }: MessageThreadProps) {
   console.log("conversation", conversation);
@@ -517,7 +374,7 @@ function HeatGrid({ heatvalues }: HeatProps) {
 }
 
 type TabType = { name: string; picture: string; description: string };
-type TabProps = { tabs: [TabType, TabType, TabType]; currtab: number };
+type TabProps = { tabs: [TabType, TabType, TabType] };
 
 function TabDescriptor({ tabs }: TabProps) {
   const [currtab, setCurrTab] = useState(0);
@@ -620,9 +477,6 @@ function App() {
     <>
       <div className="w-full min-h-full flex flex-col items-end">
         <TaskList />
-        <MessageBox isCurrentUser={false} text={"hello"} neighbor={"none"} />
-        <MessageBox isCurrentUser={true} text={"hello"} neighbor={"below"} />
-
         <ImageBox
           icon={"b0fbdd8e320622de39475b562ddad56d.png"}
           name={"Avatar1"}
