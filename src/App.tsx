@@ -1,7 +1,6 @@
-
-import { useState } from 'react'
-import './App.css'
-import { Heart, MessageSquare } from 'lucide-react'
+import { useState } from "react";
+import "./App.css";
+import { Heart, MessageSquare } from "lucide-react";
 
 // function Checkbox(){
 //   return <>
@@ -174,21 +173,20 @@ function MessageGroup({ messagegroup }: MessageGroupProps) {
 
           return (
             <>
-            <div className={`flex flex-1 ${leftOrRightCname}`}>
-
-              {leftAvatar && (
-                <ImageBox
-                icon={"b0fbdd8e320622de39475b562ddad56d.png"}
-                name={"Avatar1"}
-                />
-              )}
-              {formattedMessage}
-              {rightAvatar && (
-                <ImageBox
-                icon={"b0fbdd8e320622de39475b562ddad56d.png"}
-                name={"Avatar1"}
-                />
-              )}
+              <div className={`flex flex-1 ${leftOrRightCname}`}>
+                {leftAvatar && (
+                  <ImageBox
+                    icon={"b0fbdd8e320622de39475b562ddad56d.png"}
+                    name={"Avatar1"}
+                  />
+                )}
+                {formattedMessage}
+                {rightAvatar && (
+                  <ImageBox
+                    icon={"b0fbdd8e320622de39475b562ddad56d.png"}
+                    name={"Avatar1"}
+                  />
+                )}
               </div>
             </>
           );
@@ -322,50 +320,88 @@ function Task({ title, description, status, handleChange }: TaskProps) {
   );
 }
 
+type PostProps = {
+  name: string;
+  icon: string;
+  group: string;
+  time: number;
+  description: string;
+  likes: number;
+  comments: number;
+};
 
-
-type PostProps = {name:string,
-  icon:string,
-  group:string,
-  time:number,
-  description:string,
-  likes:number,
-  comments:number}
-
-function Post({name,icon,group,time, description,likes,comments}:PostProps){
-  return <>
-    <div className='w-[90%] max-w-sm border border-zinc-400 rounded-md p-2 flex flex-row font-light'>
-      <div className='flex flex-row'>
-        <div className = 'rounded-full w-10 h-10 bg-red-200'>
+function Post({
+  name,
+  icon,
+  group,
+  time,
+  description,
+  likes,
+  comments,
+}: PostProps) {
+  return (
+    <>
+      <div className="w-[90%] max-w-sm border border-zinc-400 rounded-md p-2 flex flex-row font-light">
+        <div className="flex flex-row">
+          <div className="rounded-full w-10 h-10 bg-red-200"></div>
+          <div className="mr-2"></div>
         </div>
-        <div className='mr-2'></div>
+        <div className="w-[80%] self-end mr-6">
+          <div className="text-xs">
+            <div>
+              Helena <span className="text-zinc-400">in Group name</span>
+            </div>
+            <div className="text-zinc-400">3 minutes ago</div>
+          </div>
+          <img
+            className="aspect-square object-cover rounded-md border border-gray-200 my-2"
+            src="https://images.pexels.com/photos/1490908/pexels-photo-1490908.jpeg?cs=srgb&dl=pexels-svetozar-milashevich-99573-1490908.jpg&fm=jpg"
+          ></img>
+          <div className="text-zinc-800">Post description</div>
+          <div className="my-3"></div>
+          <div className="text-zinc-800 flex flex-row text-sm">
+            <div className="flex flex-row items-center">
+              <Heart className="mr-1"></Heart> 21 likes
+            </div>
+            <span className="mx-2"></span>
+            <div className="flex flex-row items-center">
+              <MessageSquare className="mr-1"></MessageSquare> 4 comments
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="w-[80%] self-end mr-6">
-        <div className="text-xs">
-          <div>
-            Helena <span className='text-zinc-400'>in Group name</span>
-          </div>
-          <div className='text-zinc-400'>
-            3 minutes ago
-          </div>
+    </>
+  );
+}
+
+function HeatGrid({}) {
+  return (
+    <>
+      <div className="flex flex-col">
+        <div className="background bg-blue-300 aspect-square w-[2.3rem] m-1">
+          box1
         </div>
-        <img className="aspect-square object-cover rounded-md border border-gray-200 my-2" src="https://images.pexels.com/photos/1490908/pexels-photo-1490908.jpeg?cs=srgb&dl=pexels-svetozar-milashevich-99573-1490908.jpg&fm=jpg"></img>
-        <div className='text-zinc-800'>
-        Post description
+        <div className="background bg-blue-300 aspect-square w-[2.3rem] m-1">
+          box2
         </div>
-        <div className='my-3'></div>
-        <div className='text-zinc-800 flex flex-row text-sm'>
-          <div className = 'flex flex-row items-center'>
-          <Heart className = 'mr-1'></Heart> 21 likes
-          </div>
-          <span className='mx-2'></span>
-          <div className = 'flex flex-row items-center'>
-          <MessageSquare className = 'mr-1'></MessageSquare> 4 comments
-          </div>
-        </div>
+        <div>box3</div>
+        <div>box4</div>
+        <div>box5</div>
       </div>
-    </div>
-  </>
+      <span></span>
+      <div className="flex flex-col">
+        <div className="background bg-blue-300 aspect-square w-[2.3rem] m-1">
+          box1
+        </div>
+        <div className="background bg-blue-300 aspect-square w-[2.3rem] m-1">
+          box2
+        </div>
+        <div>box3</div>
+        <div>box4</div>
+        <div>box5</div>
+      </div>
+    </>
+  );
 }
 
 function App() {
@@ -420,12 +456,18 @@ function App() {
       <br></br>
       <br></br>
       <br></br>
-    <MessageThread conversation={conversation_ex} />
-    <div className='w-screen flex flex-col items-center gap-2 my-2'>
-    <Post name={post_ex.name} icon={post_ex.icon} group={post_ex.group} time={post_ex.time} description={post_ex.description} likes={post_ex.likes} comments={post_ex.comments} />
-    <Post name={post_ex.name} icon={post_ex.icon} group={post_ex.group} time={post_ex.time} description={post_ex.description} likes={post_ex.likes} comments={post_ex.comments} />
-    <Post name={post_ex.name} icon={post_ex.icon} group={post_ex.group} time={post_ex.time} description={post_ex.description} likes={post_ex.likes} comments={post_ex.comments} />
-    </div>
+      <MessageThread conversation={conversation_ex} />
+      <div className="w-screen flex flex-col items-center gap-2 my-2">
+        <Post
+          name={"name"}
+          icon={"icon"}
+          group={"group"}
+          time={5}
+          description={"description"}
+          likes={3}
+          comments={21}
+        />
+      </div>
     </>
   );
 }
