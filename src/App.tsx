@@ -412,6 +412,39 @@ function HeatGrid({ heatvalues }: HeatProps) {
   );
 }
 
+type TabType = { name: string; picture: string; description: string };
+type TabProps = { tabs: [TabType, TabType, TabType]; currtab: number };
+
+function TabDescriptor({ tabs }: TabProps) {
+  const [currtab, setCurrTab] = useState(0);
+  return (
+    <>
+      <div className="flex flex-col w-[90%] max-w-sm text-center">
+        <div className="flex flex-row bg-[#eeecec] justify-around rounded-lg m-3">
+          {tabs.map((atab, index) => (
+            <button
+              onClick={() => setCurrTab(index)}
+              className={`w-[30%] py-1 my-2 rounded-md ${
+                index !== currtab ? "hover:bg-gray-200" : ""
+              } ${index === currtab ? "bg-white" : ""}`}
+            >
+              {atab.name}
+            </button>
+          ))}
+        </div>
+        <div className="flex flex-col bg-white m-3 rounded-lg items-center p-1">
+          {/*  */}
+          <img
+            className="rounded-full w-40 h-40 object-cover mt-3 mb-3"
+            src={tabs[currtab].picture}
+          ></img>
+          <div className="mt-3 mb-4 mx-4">{tabs[currtab].description}</div>
+        </div>
+      </div>
+    </>
+  );
+}
+
 function App() {
   const icon0 = "c3fa630880a17b97a1f864fb528f0aa2.png";
   const icon1 = "b0fbdd8e320622de39475b562ddad56d.png";
@@ -456,6 +489,29 @@ function App() {
     [3, 3, 1, 3, 2],
   ];
 
+  const tab_ex: [TabType, TabType, TabType] = [
+    {
+      name: "Nicki",
+      picture:
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/1200px-Cat_August_2010-4.jpg",
+      description:
+        "A 28-year-old software engineer who loves AI, hiking, and sci-fi novels. Enjoys traveling and trying new recipes.",
+    },
+    {
+      name: "Jake",
+      picture:
+        "https://cdn.britannica.com/34/235834-050-C5843610/two-different-breeds-of-cats-side-by-side-outdoors-in-the-garden.jpg",
+      description:
+        "A 35-year-old graphic designer who creates digital art, plays guitar, and practices yoga. Tech and gaming enthusiast.",
+    },
+    {
+      name: "Akame",
+      picture:
+        "https://static.vecteezy.com/system/resources/thumbnails/022/963/918/small_2x/ai-generative-cute-cat-isolated-on-solid-background-photo.jpg",
+      description: "Lorem ipsum dolor amit",
+    },
+  ];
+
   return (
     <>
       <div className="w-full min-h-full flex flex-col items-end">
@@ -486,6 +542,18 @@ function App() {
         />
       </div>
       <HeatGrid heatvalues={heatvalues} />
+      <div className="bg-gray-300 flex flex-col items-center">
+        <TabDescriptor tabs={tab_ex} />
+      </div>
+
+      <div className="flex flex-col bg-white m-3 rounded-lg items-center">
+        {/*  */}
+        <img
+          className="rounded-full w-40 h-40 object-cover m-4"
+          src={tab_ex[0].picture}
+        ></img>
+        <div className="m-2">{tab_ex[0].description}</div>
+      </div>
     </>
   );
 }
