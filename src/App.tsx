@@ -165,8 +165,6 @@ type MessagePicProps = {
   role: number;
 };
 
-function MessagePic({ url, name, role }: MessagePicProps) {}
-
 type ConvoMessage = {
   id: number;
   text: string;
